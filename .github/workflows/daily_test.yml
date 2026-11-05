@@ -1,4 +1,4 @@
-name: Run Hello Test
+name: Run Data Pipeline
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron: '0 14 * * *'
 
 jobs:
-  run-python:
+  run-pipeline:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo code
@@ -17,5 +17,11 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Run script
-        run: python pipeline/hello.py
+      - name: Install dependencies
+        run: |
+          pip install requests pandas pyarrow
+
+      - name: Run fetch_data script
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: python pipeline/fetch_data.py
